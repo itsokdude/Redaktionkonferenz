@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Redaktionskonferenz - Presentation Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* Light Gray / Paper */
+            color: #1f2937; /* Dark Gray text */
+        }
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Text Highlighter Effect */
+        .highlight {
+            background: linear-gradient(120deg, #fde047 0%, #fde047 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.4em;
+            background-position: 0 88%;
+            transition: background-size 0.25s ease-in;
+        }
+        .highlight:hover {
+            background-size: 100% 88%;
+        }
+        
+        /* Slide Transitions */
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Custom Button Press */
+        .btn-press:active {
+            transform: scale(0.98);
+        }
+        
+        /* Paper Texture Overlay */
+        .texture-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Reveal Box Animation */
+        .reveal-content {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashed-box {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='8' ry='8' stroke='%239CA3AF' stroke-width='2' stroke-dasharray='8%2c8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+        
+        /* Card Hover Effect for Knowledge Slide */
+        .knowledge-card {
+            transition: all 0.3s ease;
+        }
+        .knowledge-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #fde047; /* Yellow-300 */
+        }
+
+        /* Modal Styles */
+        #imageModal {
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        #imageModal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #modalImage {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+    
+    <div class="texture-overlay"></div>
+
+    <!-- Top Bar: Status (Light Mode) -->
+    <div class="relative z-10 flex justify-between items-center px-8 py-4 border-b border-gray-300 bg-white/90 backdrop-blur shadow-sm">
+        <div class="flex items-center gap-3">
+            <span class="text-gray-500 text-sm font-mono tracking-wide uppercase">Redaktionskonferenz // Klasse 9b</span>
+        </div>
+        <div class="text-gray-800 font-mono text-xl font-bold" id="clock">00:00</div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 flex-grow flex items-center justify-center p-6">
+        
+        <!-- SLIDE 1: WELCOME -->
+        <div class="slide active w-full max-w-5xl flex-col items-center text-center" id="slide-1">
+            <i data-lucide="pen-tool" class="w-20 h-20 text-gray-800 mb-6"></i>
+            <h2 class="text-gray-500 uppercase tracking-[0.5em] text-sm mb-4 font-bold">Willkommen zur</h2>
+            <h1 class="text-6xl md:text-8xl font-bold serif-font mb-8 leading-tight text-gray-900">
+                Die <span class="highlight">Blattkritik</span>
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl leading-relaxed italic serif-font">
+                "Eine gute Karikatur tut weh. Wenn alle lachen, hast du nur einen Witz erzählt."
+            </p>
+            <div class="mt-12 flex gap-4">
+                <button onclick="nextSlide()" class="btn-press px-8 py-3 bg-gray-900 text-white font-bold rounded hover:bg-gray-700 transition flex items-center gap-2 shadow-lg">
+                    Konferenz starten <i data-lucide="arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THEORIE 1 (Verfremdung - Marionetten) -->
+        <div class="slide w-full max-w-7xl flex-col" id="slide-2">
+            <div class="flex items-center gap-4 mb-8 border-b border-gray-300 pb-4">
+                <span class="bg-yellow-400 text-black font-bold px-3 py-1 rounded text-sm">FALL 1</span>
+                <h2 class="text-4xl serif-font text-gray-900">Titel: "Social Media"</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full">
+                <!-- Left: Art Real Image (Clickable) -->
+                <div class="bg-white border-4 border-gray-900 aspect-[3/4] md:aspect-[4/3] relative flex items-center justify-center overflow-hidden shadow-xl rounded-sm transform -rotate-1 cursor-pointer" onclick="openModal('https://imgur.com/YPN7Uke.jpg')">
+                    <!-- IMGUR Link for Marionetten -->
+                    <img src="https://imgur.com/YPN7Uke.jpg" alt="Schülerzeichnung Marionetten" class="object-contain w-full h-full">
+                    
+                    <div class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded shadow text-xs font-mono text-gray-500 border border-gray-200 opacity-90">
+                        Abb. 1
+                    </div>
+                </div>
+
+                <!-- Right: Scaffolding Board -->
+                <div class="flex flex-col space-y-4 justify-center">
+                    <!-- 1. Beobachtung -->
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">1</span> Beobachtung
+                        </div>
+                        <button id="btn-obs-1" onclick="reveal('obs-1')" class="w-full h-24 dashed-box rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition group">
+                            <span class="flex items-center gap-2"><i data-lucide="eye" class="group-hover:scale-110 transition"></i> Beschreibung aufdecken</span>
+                        </button>
+                        <div id="obs-1" class="hidden bg-white border-l-4 border-gray-400 p-4 rounded shadow-sm reveal-content">
+                            <p class="text-lg text-gray-800">Eine riesige Hand mit der Aufschrift <strong>"Social Media"</strong> steuert kleine Menschenfiguren an Fäden wie <strong>Marionetten</strong>.</p>
+                        </div>
+                    </div>
+                    <!-- 2. Erkenntnis -->
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">2</span> Erkenntnis / Deutung
+                        </div>
+                        <button id="btn-ins-1" onclick="reveal('ins-1')" class="w-full h-24 dashed-box rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition group">
+                            <span class="flex items-center gap-2"><i data-lucide="lightbulb" class="group-hover:scale-110 transition"></i> Deutung aufdecken</span>
+                        </button>
+                        <div id="ins-1" class="hidden bg-white border-l-4 border-blue-400 p-4 rounded shadow-sm reveal-content">
+                            <p class="text-lg text-gray-800">Wir denken, wir sind frei, aber wir werden gesteuert. Die Realität (Menschen) wird verändert (Puppen), um <strong>Abhängigkeit</strong> zu zeigen.</p>
+                        </div>
+                    </div>
+                    <!-- 3. Theorie -->
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <button id="btn-term-1" onclick="reveal('term-1')" class="w-full py-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded font-bold flex items-center justify-center gap-2 transition shadow-sm border border-yellow-300">
+                            <i data-lucide="book-open"></i> Fachbegriff anzeigen
+                        </button>
+                        <div id="term-1" class="hidden bg-yellow-50 border border-yellow-200 p-6 rounded-lg shadow-md reveal-content relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-bl">THEORIE</div>
+                            <h3 class="text-2xl font-bold serif-font uppercase text-gray-900 mb-1">Die Verfremdung</h3>
+                            <p class="text-gray-700 font-medium">Auch: Metapher.</p>
+                            <p class="mt-2 text-sm text-gray-600">Bekannte Dinge werden in einen neuen Kontext gesetzt (Mensch -> Puppe), um eine Eigenschaft drastisch sichtbar zu machen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: THEORIE 2 (Ironie/Kontrast - Selfie/Schöner Schein) -->
+        <div class="slide w-full max-w-7xl flex-col" id="slide-3">
+            <div class="flex items-center gap-4 mb-8 border-b border-gray-300 pb-4">
+                <span class="bg-blue-500 text-white font-bold px-3 py-1 rounded text-sm">FALL 2</span>
+                <h2 class="text-4xl serif-font text-gray-900">Titel: "Schöner Schein"</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full">
+                <!-- Left: Art Real Image (Clickable) -->
+                <div class="bg-white border-4 border-gray-900 aspect-[3/4] md:aspect-[4/3] relative flex items-center justify-center overflow-hidden shadow-xl rounded-sm transform rotate-1 cursor-pointer" onclick="openModal('https://imgur.com/1xL9F9G.jpg')">
+                     <!-- IMGUR Link for Selfie Image -->
+                    <img src="https://imgur.com/1xL9F9G.jpg" alt="Schülerzeichnung Selfie" class="object-contain w-full h-full">
+
+                    <div class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded shadow text-xs font-mono text-gray-500 border border-gray-200 opacity-90">
+                        Abb. 2
+                    </div>
+                </div>
+
+                <!-- Right: Scaffolding Board -->
+                <div class="flex flex-col space-y-4 justify-center">
+                    <!-- 1. Beobachtung (Angepasst) -->
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">1</span> Beobachtung
+                        </div>
+                         <button id="btn-obs-2" onclick="reveal('obs-2')" class="w-full h-24 dashed-box rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition group">
+                            <span class="flex items-center gap-2"><i data-lucide="eye" class="group-hover:scale-110 transition"></i> Beschreibung aufdecken</span>
+                        </button>
+                        <div id="obs-2" class="hidden bg-white border-l-4 border-gray-400 p-4 rounded shadow-sm reveal-content">
+                            <p class="text-lg text-gray-800">Vorne: Eine gestylte Figur macht ein Selfie ("findet mich schön"). <br>Hinten: Eine <strong>unperfekte Person</strong> (Pickel), die aber glücklich wirkt.</p>
+                        </div>
+                    </div>
+                    <!-- 2. Erkenntnis (Angepasst auf Kontrast) -->
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">2</span> Erkenntnis / Deutung
+                        </div>
+                        <button id="btn-ins-2" onclick="reveal('ins-2')" class="w-full h-24 dashed-box rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition group">
+                            <span class="flex items-center gap-2"><i data-lucide="lightbulb" class="group-hover:scale-110 transition"></i> Deutung aufdecken</span>
+                        </button>
+                        <div id="ins-2" class="hidden bg-white border-l-4 border-blue-400 p-4 rounded shadow-sm reveal-content">
+                            <p class="text-lg text-gray-800">Der <strong>Kontrast</strong> zeigt: Die Person mit Filter sucht verzweifelt Bestätigung, während die unperfekte Person im Hintergrund mit sich selbst zufrieden ist.</p>
+                        </div>
+                    </div>
+                    <!-- 3. Theorie -->
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                         <button id="btn-term-2" onclick="reveal('term-2')" class="w-full py-4 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded font-bold flex items-center justify-center gap-2 transition shadow-sm border border-blue-300">
+                            <i data-lucide="book-open"></i> Fachbegriff anzeigen
+                        </button>
+                        <div id="term-2" class="hidden bg-blue-50 border border-blue-200 p-6 rounded-lg shadow-md reveal-content relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl">THEORIE</div>
+                            <h3 class="text-2xl font-bold serif-font uppercase text-gray-900 mb-1">Die Ironie / Kontrast</h3>
+                            <p class="text-gray-700 font-medium">Auch: Widerspruch.</p>
+                            <p class="mt-2 text-sm text-gray-600">Die Spannung zwischen zwei Elementen (hier: Schein vs. Sein, Perfektion vs. Zufriedenheit) erzeugt die Kritik.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: NEW KNOWLEDGE BASE (ZWISCHENSICHERUNG) - Aktualisiert -->
+        <div class="slide w-full max-w-7xl flex-col" id="slide-4">
+            <div class="flex flex-col md:flex-row md:items-end gap-4 mb-6 border-b border-gray-300 pb-4">
+                <div>
+                    <h3 class="text-gray-400 font-mono mb-1 uppercase tracking-wider text-sm">ZWISCHENSICHERUNG</h3>
+                    <h2 class="text-4xl serif-font text-gray-900">Die Werkzeugkiste</h2>
+                </div>
+                <p class="text-gray-600 pb-1 italic max-w-2xl md:ml-auto text-sm md:text-base">
+                    "Karikaturisten nutzen diese Stilmittel, um die Wahrheit aufzudecken oder den schönen Schein zu zerstören."
+                </p>
+            </div>
+
+            <!-- Grid Container (Jetzt 6 Karten) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full overflow-y-auto pb-4">
+                
+                <!-- Card 1: Verfremdung -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative group">
+                    <div class="absolute top-4 right-4 text-yellow-500 opacity-20">
+                        <i data-lucide="shuffle" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-yellow-100 p-2 rounded text-yellow-700"><i data-lucide="move-horizontal" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">1. Verfremdung</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed mb-6">
+                        Das Thema wird in ein <strong>bekanntes Bild</strong> übertragen (z.B. durch Symbolik), um Zusammenhänge neu zu beleuchten. Die Realität wird bewusst verändert.
+                    </p>
+                    
+                     <!-- Beispiel Button -->
+                     <button onclick="event.stopPropagation(); openModal('https://imgur.com/L6KH3VB.jpg')" class="absolute bottom-4 right-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-600 p-2 rounded-full border border-yellow-200 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-md flex items-center gap-2" title="Beispiel anzeigen">
+                        <span class="text-xs font-bold uppercase tracking-wider">Beispiel</span>
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Übertreibung (mit Beispiel-Button) -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative group">
+                    <div class="absolute top-4 right-4 text-red-500 opacity-20">
+                        <i data-lucide="zoom-in" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-red-100 p-2 rounded text-red-700"><i data-lucide="search" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">2. Übertreibung</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed mb-6">
+                        Auch <em>Hyperbel</em>. Charakteristisches wird <strong>überdeutlich hervorgehoben</strong>, um Personen oder Eigenheiten sofort erkennbar zu machen.
+                    </p>
+                    
+                     <!-- Beispiel Button (Positioniert unten rechts, hoher Z-Index) -->
+                     <button onclick="event.stopPropagation(); openModal('https://imgur.com/4wvGPci.jpg')" class="absolute bottom-4 right-4 bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-full border border-red-200 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-md flex items-center gap-2" title="Beispiel anzeigen">
+                        <span class="text-xs font-bold uppercase tracking-wider">Beispiel</span>
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3: Verallgemeinerung -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative">
+                    <div class="absolute top-4 right-4 text-blue-500 opacity-20">
+                        <i data-lucide="globe" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-blue-100 p-2 rounded text-blue-700"><i data-lucide="users" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">3. Verallgemeinerung</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        Prinzip <em>"Pars pro Toto"</em>: Ein Teil steht für das Ganze. <br>
+                        <span class="block mt-2 text-xs bg-gray-100 p-1 rounded border border-gray-200">Bsp: Fischgräten = Hunger | Krone = Macht</span>
+                    </p>
+                </div>
+
+                <!-- Card 4: Metapher & Allegorie -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative group">
+                    <div class="absolute top-4 right-4 text-purple-500 opacity-20">
+                        <i data-lucide="anchor" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-purple-100 p-2 rounded text-purple-700"><i data-lucide="ship" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">4. Metapher / Allegorie</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed mb-6">
+                        Bedeutungsübertragung in ein Bild (z.B. Staatsschiff, Sanduhr läuft ab) oder <strong>Personifikation</strong> abstrakter Inhalte (Sensenmann = Tod).
+                    </p>
+                    
+                    <!-- Beispiel Button -->
+                     <button onclick="event.stopPropagation(); openModal('https://imgur.com/cOvoTrS.jpg')" class="absolute bottom-4 right-4 bg-purple-100 hover:bg-purple-200 text-purple-600 p-2 rounded-full border border-purple-200 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-md flex items-center gap-2" title="Beispiel anzeigen">
+                        <span class="text-xs font-bold uppercase tracking-wider">Beispiel</span>
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- NEU Card 5: Ironie / Kontrast (mit neuem Icon und fettem Text) -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative">
+                    <div class="absolute top-4 right-4 text-orange-500 opacity-20">
+                        <i data-lucide="drama" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-orange-100 p-2 rounded text-orange-700"><i data-lucide="drama" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">5. Ironie / Kontrast</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        Das Gesagte ist das Gegenteil des Gemeinten. Der Witz entsteht durch den <strong>Widerspruch</strong> zwischen Bild und Text oder zwei Bildelementen.
+                    </p>
+                </div>
+
+                <!-- Card 6: Vergleich (Verschoben) -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm knowledge-card relative">
+                    <div class="absolute top-4 right-4 text-green-500 opacity-20">
+                        <i data-lucide="arrow-left-right" class="w-12 h-12"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-green-100 p-2 rounded text-green-700"><i data-lucide="repeat" class="w-6 h-6"></i></div>
+                        <h3 class="text-xl font-bold serif-font text-gray-900">6. Vergleich</h3>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        Eigenschaften (oft aus dem Tierreich) werden auf Personen übertragen.
+                        <span class="block mt-2 text-xs bg-gray-100 p-1 rounded border border-gray-200">Bsp: "Stur wie ein Esel", "Reißender Wolf"</span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SLIDE 5: WORKSHOP INSTRUCTIONS (UPDATED TIMER) -->
+        <div class="slide w-full max-w-6xl flex-col" id="slide-5">
+            <h3 class="text-gray-400 font-mono mb-2 uppercase tracking-wider">Phase 3: Feedback</h3>
+            <h2 class="text-5xl serif-font text-gray-900 mb-10 border-b-2 border-gray-200 pb-4 inline-block">Der Fremd-Check</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-yellow-400 transition-colors duration-300">
+                    <div class="text-5xl font-bold text-gray-200 mb-4">01</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">Verteilung</h4>
+                    <p class="text-gray-600 leading-relaxed">Tauscht eure Zeichnungen. Niemand bearbeitet sein eigenes Werk.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-yellow-400 transition-colors duration-300">
+                    <div class="text-5xl font-bold text-gray-200 mb-4">02</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">Interpretation</h4>
+                    <p class="text-gray-600 leading-relaxed">Schreibe auf die Rückseite 3-4 Sätze: <br><span class="font-serif italic text-gray-800 bg-yellow-100 px-1">"Was kritisiert dieses Bild?"</span></p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-yellow-400 relative overflow-hidden">
+                    <div class="absolute -right-8 top-4 bg-yellow-400 text-black font-bold py-1 px-10 rotate-45 text-xs shadow-sm">ACTION</div>
+                    <div class="text-5xl font-bold text-gray-200 mb-4">03</div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">Das Upgrade</h4>
+                    <ul class="text-gray-600 space-y-3 text-sm font-medium">
+                        <li class="flex gap-3 items-start"><i data-lucide="check-square" class="w-5 h-5 text-green-600 flex-shrink-0"></i> <span>Wurde ein Stilmittel genutzt? Benenne es!</span></li>
+                        <li class="flex gap-3 items-start"><i data-lucide="arrow-up-circle" class="w-5 h-5 text-blue-600 flex-shrink-0"></i> <span>Zu brav? Gib einen Tipp: "Nutze Ironie indem..."</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 flex flex-col items-center justify-center gap-4">
+                <div class="text-6xl font-mono font-bold text-gray-900 tabular-nums tracking-tighter" id="feedbackTimer">15:00</div>
+                
+                <div class="flex gap-3">
+                    <button onclick="toggleFeedbackTimer()" id="timerToggleBtn" class="bg-gray-900 text-white px-6 py-2 rounded font-bold hover:bg-gray-700 transition flex items-center gap-2 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg> Start
+                    </button>
+                    <button onclick="addFeedbackMinute()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded font-bold hover:bg-gray-300 transition flex items-center gap-2 shadow-sm" title="+1 Minute">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg> 1 Min
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: OUTRO -->
+        <div class="slide w-full max-w-4xl flex-col text-center" id="slide-6">
+             <div class="bg-yellow-100 p-4 rounded-full inline-block mb-6 shadow-sm">
+                 <i data-lucide="zap" class="w-16 h-16 text-yellow-600"></i>
+             </div>
+            <h2 class="text-5xl serif-font text-gray-900 mb-8">Redaktionsschluss</h2>
+            <p class="text-3xl text-gray-600 mb-12 font-serif leading-snug">
+                "Eine Karikatur ist mehr als eine Zeichnung. <br>Sie braucht <span class="highlight font-bold text-gray-900">Waffen</span>, um Meinungen zuzuspitzen."
+            </p>
+            
+            <div class="flex justify-center gap-4">
+                 <div class="bg-white px-6 py-3 rounded border border-gray-300 shadow text-gray-500 text-sm font-mono">
+                    HAUSAUFGABE: FINISHING TOUCH
+                 </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Navigation Controls -->
+    <div class="relative z-20 bg-white border-t border-gray-200 p-4 flex justify-between items-center shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
+        <button onclick="prevSlide()" class="text-gray-500 hover:text-gray-900 transition flex items-center gap-2 font-mono text-sm font-bold group">
+            <i data-lucide="chevron-left" class="group-hover:-translate-x-1 transition"></i> ZURÜCK
+        </button>
+        
+        <div class="flex gap-3" id="dots">
+            <!-- Dots generated by JS -->
+        </div>
+
+        <button onclick="nextSlide()" class="bg-gray-900 hover:bg-gray-700 text-white px-6 py-2 rounded font-bold transition flex items-center gap-2 shadow-md group">
+            WEITER <i data-lucide="chevron-right" class="group-hover:translate-x-1 transition"></i>
+        </button>
+    </div>
+
+    <!-- MODAL für Bildvergrößerung -->
+    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeModal()">
+        <div class="relative max-w-4xl mx-auto p-4">
+            <button onclick="closeModal()" class="absolute top-0 right-0 m-4 text-white hover:text-gray-300 z-10">
+                <i data-lucide="x" class="w-10 h-10"></i>
+            </button>
+            <img id="modalImage" src="" alt="Vergrößerte Ansicht" class="max-h-[90vh] max-w-[90vw] object-contain rounded shadow-2xl cursor-default" onclick="event.stopPropagation()">
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // State
+        let currentSlide = 1;
+        const totalSlides = 6; // Updated Slide Count
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Navigation Logic
+        function showSlide(n) {
+            // Hide all
+            document.querySelectorAll('.slide').forEach(s => {
+                s.classList.remove('active');
+                s.style.display = 'none'; 
+            });
+            
+            // Show current
+            const activeSlide = document.getElementById(`slide-${n}`);
+            activeSlide.style.display = 'flex';
+            // Small timeout to trigger opacity transition
+            setTimeout(() => activeSlide.classList.add('active'), 10);
+
+            // Update Dots
+            updateDots();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Reveal Logic (Generic for all items)
+        function reveal(id) {
+            const content = document.getElementById(id);
+            const btn = document.getElementById(`btn-${id}`);
+            
+            if(content && btn) {
+                content.classList.remove('hidden');
+                btn.classList.add('hidden'); // Hide button completely
+            }
+        }
+
+        // Generate Dots
+        function updateDots() {
+            const dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `h-2 rounded-full transition-all duration-300 cursor-pointer hover:bg-gray-400 ${i === currentSlide ? 'bg-gray-900 w-8' : 'bg-gray-300 w-2'}`;
+                dot.onclick = () => { currentSlide = i; showSlide(i); }; // Clickable dots
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        function openModal(src) {
+            modalImg.src = src;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            // Clear src after animation to prevent flickering on reopen
+            setTimeout(() => { modalImg.src = ''; }, 300);
+        }
+
+        // Feedback Timer Logic
+        let feedbackTime = 15 * 60;
+        let feedbackInterval;
+        let isFeedbackRunning = false;
+        
+        function updateFeedbackTimerDisplay() {
+            const minutes = Math.floor(feedbackTime / 60);
+            const seconds = feedbackTime % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('feedbackTimer').innerText = display;
+            
+            if (feedbackTime <= 0) {
+                 document.getElementById('feedbackTimer').classList.add('text-red-600', 'animate-pulse');
+                 stopFeedbackTimer();
+            } else {
+                 document.getElementById('feedbackTimer').classList.remove('text-red-600', 'animate-pulse');
+            }
+        }
+
+        function toggleFeedbackTimer() {
+            if (isFeedbackRunning) {
+                stopFeedbackTimer();
+            } else {
+                startFeedbackTimer();
+            }
+        }
+
+        function startFeedbackTimer() {
+            if (feedbackInterval) return;
+            isFeedbackRunning = true;
+            
+            feedbackInterval = setInterval(() => {
+                if (feedbackTime > 0) {
+                    feedbackTime--;
+                    updateFeedbackTimerDisplay();
+                } else {
+                    stopFeedbackTimer();
+                }
+            }, 1000);
+            
+            const btn = document.getElementById('timerToggleBtn');
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg> Pause`;
+        }
+
+        function stopFeedbackTimer() {
+            clearInterval(feedbackInterval);
+            feedbackInterval = null;
+            isFeedbackRunning = false;
+            const btn = document.getElementById('timerToggleBtn');
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg> Start`;
+        }
+
+        function addFeedbackMinute() {
+            feedbackTime += 60;
+            updateFeedbackTimerDisplay();
+        }
+
+        // Init
+        updateDots();
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', function(e) {
+            if(e.key === "ArrowRight") nextSlide();
+            if(e.key === "ArrowLeft") prevSlide();
+            if(e.key === "Escape") closeModal();
+        });
+
+    </script>
+</body>
+</html>
