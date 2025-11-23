@@ -112,8 +112,8 @@
         <div class="slide active w-full max-w-5xl flex-col items-center text-center" id="slide-1">
             <i data-lucide="pen-tool" class="w-20 h-20 text-gray-800 mb-6"></i>
             <h2 class="text-gray-500 uppercase tracking-[0.5em] text-sm mb-4 font-bold">Willkommen zur</h2>
-            <h1 class="text-6xl md:text-8xl font-bold serif-font mb-8 leading-tight text-gray-900">
-                Die <span class="highlight">Blattkritik</span>
+            <h1 class="text-5xl md:text-7xl font-bold serif-font mb-8 leading-tight text-gray-900">
+                <span class="highlight">Redaktionskonferenz</span>
             </h1>
             <p class="text-xl text-gray-600 max-w-2xl leading-relaxed italic serif-font">
                 "Eine gute Karikatur tut weh. Wenn alle lachen, hast du nur einen Witz erzählt."
@@ -205,7 +205,7 @@
 
                 <!-- Right: Scaffolding Board -->
                 <div class="flex flex-col space-y-4 justify-center">
-                    <!-- 1. Beobachtung (Angepasst) -->
+                    <!-- 1. Beobachtung (Angepasst: Links/Rechts) -->
                     <div class="space-y-2">
                         <div class="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-wider">
                             <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">1</span> Beobachtung
@@ -214,7 +214,7 @@
                             <span class="flex items-center gap-2"><i data-lucide="eye" class="group-hover:scale-110 transition"></i> Beschreibung aufdecken</span>
                         </button>
                         <div id="obs-2" class="hidden bg-white border-l-4 border-gray-400 p-4 rounded shadow-sm reveal-content">
-                            <p class="text-lg text-gray-800">Vorne: Eine gestylte Figur macht ein Selfie ("findet mich schön"). <br>Hinten: Eine <strong>unperfekte Person</strong> (Pickel), die aber glücklich wirkt.</p>
+                            <p class="text-lg text-gray-800"><strong>Links:</strong> Eine gestylte Figur macht ein Selfie ("findet mich schön"). <br><strong>Rechts:</strong> Eine unperfekte Person (Pickel), die aber glücklich wirkt.</p>
                         </div>
                     </div>
                     <!-- 2. Erkenntnis (Angepasst auf Kontrast) -->
@@ -226,7 +226,7 @@
                             <span class="flex items-center gap-2"><i data-lucide="lightbulb" class="group-hover:scale-110 transition"></i> Deutung aufdecken</span>
                         </button>
                         <div id="ins-2" class="hidden bg-white border-l-4 border-blue-400 p-4 rounded shadow-sm reveal-content">
-                            <p class="text-lg text-gray-800">Der <strong>Kontrast</strong> zeigt: Die Person mit Filter sucht verzweifelt Bestätigung, während die unperfekte Person im Hintergrund mit sich selbst zufrieden ist.</p>
+                            <p class="text-lg text-gray-800">Der <strong>Kontrast</strong> zeigt: Die Person mit Filter sucht verzweifelt Bestätigung, während die unperfekte Person daneben mit sich selbst zufrieden ist.</p>
                         </div>
                     </div>
                     <!-- 3. Theorie -->
@@ -238,7 +238,7 @@
                             <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl">THEORIE</div>
                             <h3 class="text-2xl font-bold serif-font uppercase text-gray-900 mb-1">Die Ironie / Kontrast</h3>
                             <p class="text-gray-700 font-medium">Auch: Widerspruch.</p>
-                            <p class="mt-2 text-sm text-gray-600">Die Spannung zwischen zwei Elementen (hier: Schein vs. Sein, Perfektion vs. Zufriedenheit) erzeugt die Kritik.</p>
+                            <p class="mt-2 text-sm text-gray-600">Die Spannung zwischen zwei Elementen (hier: Schein vs. Sein) erzeugt die Kritik am Schönheitswahn.</p>
                         </div>
                     </div>
                 </div>
@@ -413,20 +413,53 @@
             </div>
         </div>
 
-        <!-- SLIDE 6: OUTRO -->
-        <div class="slide w-full max-w-4xl flex-col text-center" id="slide-6">
-             <div class="bg-yellow-100 p-4 rounded-full inline-block mb-6 shadow-sm">
-                 <i data-lucide="zap" class="w-16 h-16 text-yellow-600"></i>
+        <!-- SLIDE 6: ABSCHLUSS & REFLEXION (NEU - OPTIONALES PLENUM) -->
+        <div class="slide w-full max-w-6xl flex-col" id="slide-6">
+             <div class="bg-yellow-100 p-4 rounded-full inline-block mb-6 shadow-sm mx-auto">
+                 <i data-lucide="check-check" class="w-16 h-16 text-yellow-600"></i>
              </div>
-            <h2 class="text-5xl serif-font text-gray-900 mb-8">Redaktionsschluss</h2>
-            <p class="text-3xl text-gray-600 mb-12 font-serif leading-snug">
-                "Eine Karikatur ist mehr als eine Zeichnung. <br>Sie braucht <span class="highlight font-bold text-gray-900">Waffen</span>, um Meinungen zuzuspitzen."
-            </p>
+            <h2 class="text-5xl serif-font text-gray-900 mb-8 text-center">Redaktionsschluss</h2>
             
-            <div class="flex justify-center gap-4">
-                 <div class="bg-white px-6 py-3 rounded border border-gray-300 shadow text-gray-500 text-sm font-mono">
-                    HAUSAUFGABE: FINISHING TOUCH
-                 </div>
+            <!-- 3 Schritte Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
+                <!-- Card 1: Rückgabe -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center text-center">
+                    <div class="bg-blue-100 p-3 rounded-full mb-4 text-blue-600"><i data-lucide="undo-2" class="w-8 h-8"></i></div>
+                    <h4 class="font-bold text-xl mb-2">1. Rückgabe</h4>
+                    <p class="text-gray-600 text-sm">Holt euch eure Zeichnungen vom Partner zurück.</p>
+                </div>
+                
+                <!-- Card 2: Lesen -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center text-center">
+                    <div class="bg-green-100 p-3 rounded-full mb-4 text-green-600"><i data-lucide="glasses" class="w-8 h-8"></i></div>
+                    <h4 class="font-bold text-xl mb-2">2. Faktencheck</h4>
+                    <p class="text-gray-600 text-sm">Lest das Feedback und den "Upgrade-Tipp" auf der Rückseite.</p>
+                </div>
+
+                <!-- Card 3: Reflexion -->
+                <div class="bg-white p-6 rounded-xl border-2 border-yellow-400 shadow-md flex flex-col items-center text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-yellow-400 text-xs font-bold px-2 py-1 rounded-bl">WICHTIG</div>
+                    <div class="bg-yellow-100 p-3 rounded-full mb-4 text-yellow-700"><i data-lucide="star" class="w-8 h-8"></i></div>
+                    <h4 class="font-bold text-xl mb-2">3. Entscheidung</h4>
+                    <p class="text-gray-800 font-medium text-sm">"Welchen EINEN Tipp setzt du um, um dein Bild bissiger zu machen?"</p>
+                </div>
+            </div>
+            
+            <!-- Plenum Impuls (Hidden initially) -->
+            <div class="w-full mt-8 flex flex-col items-center">
+                <button onclick="reveal('plenum-question')" id="btn-plenum-question" class="text-gray-400 hover:text-gray-600 transition flex items-center gap-2 text-sm font-mono uppercase tracking-widest opacity-50 hover:opacity-100">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Plenum-Frage
+                </button>
+                
+                <div id="plenum-question" class="hidden w-full bg-gray-900 text-white p-6 rounded-xl shadow-lg flex items-center justify-between reveal-content mt-4">
+                     <div>
+                        <span class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-1 block">PLENUM-FRAGE</span>
+                        <p class="text-xl font-serif italic">"Wer hat einen richtig 'bösen' oder genialen Tipp bekommen?"</p>
+                     </div>
+                     <div class="bg-white/10 p-3 rounded-full">
+                         <i data-lucide="message-circle" class="w-8 h-8 text-white"></i>
+                     </div>
+                </div>
             </div>
         </div>
 
